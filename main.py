@@ -15,7 +15,7 @@ async def on_ready():
 
 @client.command(pass_context = True)
 async def tester(ctx):
-  await ctx.send("hello, its working poggo")
+  await ctx.send("hello, its working pog")
 
 @client.command(pass_context = True)
 async def join(ctx):
