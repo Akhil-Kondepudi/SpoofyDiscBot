@@ -4,6 +4,8 @@ from discord import FFmpegPCMAudio
 import requests
 import os
 
+FFMPEG_PATH = '/home/runner/DiscBot/node_modules/ffmpeg-static/ffmpeg'
+discord.opus.load_opus("./libopus.so.0.8.0")
 
 intents = discord.Intents.all()
 intents.members = True
