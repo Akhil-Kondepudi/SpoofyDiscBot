@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import FFmpegPCMAudio
 import requests
 import os
 
@@ -21,7 +22,9 @@ async def tester(ctx):
 async def join(ctx):
   if (ctx.author.voice):
     channel = ctx.message.author.voice.channel
-    await channel.connect()
+    voice = await channel.connect()
+    source = FFmpegPCMAudio('tester.mp3')
+    player = voice.play(source)
   else:
     await ctx.send("You are not in voice channel sadge")
 
