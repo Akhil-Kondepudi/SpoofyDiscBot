@@ -37,4 +37,31 @@ async def leave(ctx):
   else:
     await ctx.send("Im not in the voice channel you big dumbo")
 
+@client.command(pass_content = True)
+async def pause(ctx):
+  voice = discord.utils.get(client.voice_clients,guild = ctx.guild)
+  if voice.is_playing():
+    voice.pause()
+  else:
+    await ctx.send("there is no audio playing right now")
+
+@client.command(pass_content = True)
+async def resume(ctx):
+  voice = discord.utils.get(client.voice_clients,guild = ctx.guild)
+  if voice.is_paused():
+    voice.resume()
+  else:
+    await ctx.send("there is no audio prepped right now baka")
+
+@client.command(pass_content = True)
+async def stop(ctx):
+  voice = discord.utils.get(client.voice_clients,guild = ctx.guild)
+  voice.stop()
+
+@client.command(pass_content = True)
+async def play(ctx, arg):
+  voice = ctx.guild.voice_client
+  source = FFmpegPCMAudio(arg + ".mp3")
+  player = voice.play(source)
+
 client.run(os.environ['TOKEN'])
