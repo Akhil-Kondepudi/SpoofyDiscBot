@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import FFmpegPCMAudio
 import requests
 import os
+import youtube_dl
 
 FFMPEG_PATH = '/home/runner/DiscBot/node_modules/ffmpeg-static/ffmpeg'
 discord.opus.load_opus("./libopus.so.0.8.0")
@@ -25,7 +26,7 @@ async def join(ctx):
   if (ctx.author.voice):
     channel = ctx.message.author.voice.channel
     voice = await channel.connect()
-    source = FFmpegPCMAudio('tester.mp3')
+    source = FFmpegPCMAudio('song.mp3')
     player = voice.play(source)
   else:
     await ctx.send("You are not in voice channel sadge")
@@ -59,9 +60,29 @@ async def stop(ctx):
   voice.stop()
 
 @client.command(pass_content = True)
-async def play(ctx, arg):
-  voice = ctx.guild.voice_client
-  source = FFmpegPCMAudio(arg + ".mp3")
-  player = voice.play(source)
+async def play(ctx, url:str):
+  if (ctx.author.voice):
+    channel = ctx.message.author.voice.channel
+    voice = await channel.connect()
+
+    ydl_opts = {
+      'format': 'bestaudio/best',
+      'postprocessors': [{
+          'key': 'FFmpegExtractAudio',
+          'preferredcodec': 'mp3',
+          'preferredquality': '192',
+      }],
+    }
+
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+      ydl.download([url])
+    for file in os.listdir("./"):
+      if file.endswith(".mp3"):
+        os.rename(file, "song.mp3")
+    
+    source = FFmpegPCMAudio('song.mp3')
+    player = voice.play(source)
+  else:
+    await ctx.send("You are not in voice channel sadge")
 
 client.run(os.environ['TOKEN'])
